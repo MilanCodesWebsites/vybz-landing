@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBYZ - Modern Music Player</title>
+    <meta name="description" content="VYBZ - A music player from the future" />
+    <meta name="author" content="Prince" />
+
+    <meta property="og:title" content="VYBZ Music Player" />
+    <meta property="og:description" content="VYBZ - A music player from the future" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://otiktpyazqotihijbwhm.supabase.co/storage/v1/object/public/images/390738f5-10d9-4718-bec8-1139250bbb37-Untitled%20design%20(28).png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .download-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 27px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            border: 2px solid transparent;
+        }
+
+        .download-btn i {
+            margin-right: 10px;
+            font-size: 17px;
+        }
+
+        .android-btn {
+            background-color: white;
+            color: black;
+        }
+
+        .android-btn:hover {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .ios-btn {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            box-shadow: none;
+        }
+
+        .ios-btn:hover {
+            background-color: white;
+            color: black;
+        }
+
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .player-container {
+            width: 100%;
+            height: 100vh;
+            max-width: 100%;
+            position: relative;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Slideshow background */
+        .slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .slides {
+            width: 500%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .slide {
+            width: 20%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .slide-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .slide-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slide-dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-button {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login {
+            background-color: white;
+            color: #333;
+            border: none;
+        }
+
+        /* Content */
+        .content {
+            display: flex;
+            flex-direction: column;
+            padding: 0 30px;
+            position: relative;
+            z-index: 2;
+            height: calc(100% - 160px); /* Adjusted to fit in viewport */
+        }
+
+        .artist-info {
+            width: 50%;
+            padding-right: 20px;
+            margin-bottom: 20px; /* Reduced margin */
+        }
+
+        .artist-name {
+            font-size: 70px; /* Reduced size */
+            font-weight: 800;
+            line-height: 0.9;
+            margin-bottom: 10px; /* Reduced margin */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .artist-description {
+            font-size: 16px;
+            max-width: 400px;
+            margin-bottom: 20px; /* Reduced margin */
+            opacity: 0.9;
+        }
+
+       
+
+        /* Player */
+        .player {
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            width: calc(100% - 60px); /* Adjusted width */
+            max-width: 400px;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 15px; /* Reduced padding */
+            z-index: 3;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .song-cover {
+            width: 40px; /* Reduced size */
+            height: 40px; /* Reduced size */
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .song-details {
+            flex: 1;
+        }
+
+        .song-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .song-duration {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .progress-container {
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Reduced gap */
+        }
+
+        .control-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 20px; /* Reduced size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .control-button:hover {
+            transform: scale(1.1);
+        }
+
+        .control-button:active {
+            transform: scale(0.95);
+        }
+
+        .play-pause-button {
+            width: 40px; /* Reduced size */
+            height: 40px; /* Reduced size */
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            font-size: 18px; /* Reduced size */
+        }
+
+        .logo-bottom {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            z-index: 3;
+        }
+
+        .volume-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced gap */
+        }
+
+        .volume-icon {
+            cursor: pointer;
+        }
+
+        .volume-slider {
+            width: 60px; /* Reduced width */
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .volume-level {
+            height: 100%;
+            background-color: white;
+            width: 100%;
+        }
+
+        @media (max-width: 992px) {
+            .artist-name {
+                font-size: 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                height: calc(100% - 140px);
+                justify-content: space-between;
+                padding-bottom: 80px; /* Add space for the player at bottom */
+            }
+
+            .artist-info {
+                width: 100%;
+                margin-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            .artist-name {
+                font-size: 40px;
+            }
+
+            .artist-description {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .download-section {
+                margin-bottom: 0;
+            }
+
+            .download-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            .download-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .download-button {
+                padding: 8px 12px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .content{
+                margin-top: 350px;
+            }
+
+            /* Full-width player at bottom for mobile */
+            .player {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 16px 16px 0 0;
+                padding: 12px 15px;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+            }
+
+            .logo-bottom {
+                display: none;
+            }
+
+            .slide-controls {
+                bottom: 90px; /* Move up to avoid overlap with player */
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px;
+            }
+
+            .content {
+                padding: 0 15px;
+            }
+
+            .artist-name {
+                font-size: 32px;
+            }
+
+            .artist-description {
+                font-size: 12px;
+            }
+
+            .download-title {
+                font-size: 16px;
+            }
+
+            .download-buttons {
+                gap: 8px;
+            }
+
+            .download-button {
+                padding: 6px 10px;
+            }
+
+            .download-icon {
+                font-size: 16px;
+            }
+
+            .download-big {
+                font-size: 12px;
+            }
+
+            .download-small {
+                font-size: 8px;
+            }
+
+            .controls {
+                gap: 15px;
+            }
+
+            .play-pause-button {
+                width: 36px;
+                height: 36px;
+            }
+
+            /* Adjust player for very small screens */
+            .player {
+                padding: 10px;
+            }
+
+            .song-cover {
+                width: 36px;
+                height: 36px;
+            }
+
+            .song-title {
+                font-size: 14px;
+            }
+
+            .song-duration {
+                font-size: 10px;
+            }
+
+            .volume-container {
+                top: 10px;
+                right: 10px;
+            }
+
+            .volume-slider {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <!-- Slideshow Background -->
+        <div class="slideshow">
+            <div class="slides">
+                <div class="slide" style="background-image: url('odu.png');"></div>
+                <div class="slide" style="background-image: url('asake.png');"></div>
+                <div class="slide" style="background-image: url('david.png');"></div>
+                <div class="slide" style="background-image: url('burna.png');"></div>
+                <div class="slide" style="background-image: url('rema.png');"></div>
+            </div>
+            <div class="slide-controls">
+                <div class="slide-dot active" data-index="0"></div>
+                <div class="slide-dot" data-index="1"></div>
+                <div class="slide-dot" data-index="2"></div>
+                <div class="slide-dot" data-index="3"></div>
+                <div class="slide-dot" data-index="4"></div>
+            </div>
+        </div>
+
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </div>
+                <div class="logo-text">vybz</div>
+            </div>
+            <div class="auth-buttons">
+                <button class="auth-button login">Download</button>
+            </div>
+        </header>
+
+        <br>
+        <div class="content">
+            <div class="artist-info">
+                <h1 class="artist-name">your sound, your vybz</h1>
+                <p class="artist-description">discover your favourite tracks, curated playlists, and trending music all in one place</p>
+                <div class="download-container">
+                    <a href="vybz.apk" class="download-btn android-btn">
+                        <i class="fab fa-android"></i>
+                        Get for Android
+                    </a>
+                    <a href="ios-download.html" class="download-btn ios-btn">
+                        <i class="fab fa-apple"></i>
+                        Get for iOS
+                    </a>
+                </div>
+            </div>
+
+           
+            
+        </div>
+
+        <div class="player">
+            <!-- Hidden audio element -->
+            <audio id="audio-player" preload="metadata">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            
+            <div class="song-info">
+                <img src="https://via.placeholder.com/50/6b7280/FFFFFF?text=BLF" alt="Song Cover" class="song-cover">
+                <div class="song-details">
+                    <div class="song-title">Blocka La Flame</div>
+                    <div class="song-duration" id="total-duration">0:00</div>
+                </div>
+                <div class="volume-container">
+                    <div class="volume-icon" id="volume-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                        </svg>
+                    </div>
+                    <div class="volume-slider" id="volume-slider">
+                        <div class="volume-level" id="volume-level"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="progress-info">
+                    <span id="current-time">0:00</span>
+                    <span id="remaining-time">-0:00</span>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="control-button" id="prev-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                        <polygon points="9 20 9 4 1 12 9 20"></polygon>
+                    </svg>
+                </button>
+                <button class="control-button play-pause-button" id="play-pause-button">
+                    <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                </button>
+                <button class="control-button" id="next-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                        <polygon points="15 4 15 20 23 12 15 4"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="logo-bottom">
+            <div class="logo-text"><a href="https://onrooleyy.vercel.app" style="color: white;">prince</a></div>
+        </div>
+    </div>
+
+    <script>
+        // Slideshow functionality
+        const slides = document.querySelector('.slides');
+        const dots = document.querySelectorAll('.slide-dot');
+        let currentSlide = 0;
+        
+        // Auto slideshow
+        let slideInterval = setInterval(nextSlide, 5000);
+        
+        function showSlide(index) {
+            slides.style.transform = `translateX(-${index * 20}%)`;
+            
+            // Update active dot
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+            
+            currentSlide = index;
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % 5;
+            showSlide(currentSlide);
+        }
+        
+        // Add click event to dots
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                clearInterval(slideInterval);
+                showSlide(parseInt(dot.dataset.index));
+                slideInterval = setInterval(nextSlide, 5000);
+            });
+        });
+        
+        // Pause slideshow when hovering over the slideshow
+        const slideshow = document.querySelector('.slideshow');
+        slideshow.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+        
+        slideshow.addEventListener('mouseleave', () => {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        // Audio Player Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const audioPlayer = document.getElementById('audio-player');
+            const playPauseButton = document.getElementById('play-pause-button');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const currentTimeDisplay = document.getElementById('current-time');
+            const remainingTimeDisplay = document.getElementById('remaining-time');
+            const totalDurationDisplay = document.getElementById('total-duration');
+            const volumeIcon = document.getElementById('volume-icon');
+            const volumeSlider = document.getElementById('volume-slider');
+            const volumeLevel = document.getElementById('volume-level');
+
+            // Playlist (you can add more songs here)
+            const playlist = [
+                {
+                    title: "LEGOLAS",
+                    artist: "ODUMODUBLVCK",
+                    cover: "https://otiktpyazqotihijbwhm.supabase.co/storage/v1/object/public/images/c7f93e0a-8464-483f-80ce-96d5b7a9f2c4-tmic.jpeg",
+                    source: "ODUMODUBLVCK-LEGOLAS-(JustNaija.com).mp3"
+                },
+                {
+                    title: "BALLON d'OR",
+                    artist: "ODUMODUBLVCK",
+                    cover: "https://otiktpyazqotihijbwhm.supabase.co/storage/v1/object/public/images/c7f93e0a-8464-483f-80ce-96d5b7a9f2c4-tmic.jpeg",
+                    source: "ODUMODUBLVCK-BALLON-D-OR-(JustNaija.com).mp3"
+                },
+                {
+                    title: "Be There Still",
+                    artist: "Davido",
+                    cover: "https://otiktpyazqotihijbwhm.supabase.co/storage/v1/object/public/images/3ea73e01-e0fc-4fac-8617-9a3b674cecc4-5ive.jpeg",
+                    source: "Davido-Be-There-Still-(JustNaija.com).mp3"
+                }
+            ];
+
+            let currentSongIndex = 0;
+
+            // Load the first song
+            loadSong(currentSongIndex);
+
+            // Format time in minutes and seconds
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+                return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+            }
+
+            // Load song function
+            function loadSong(index) {
+                const song = playlist[index];
+                document.querySelector('.song-title').textContent = song.title;
+                document.querySelector('.song-duration').textContent = `${song.artist}`;
+                document.querySelector('.song-cover').src = song.cover;
+                audioPlayer.src = song.source;
+                
+                // Reset progress
+                progress.style.width = '0%';
+                currentTimeDisplay.textContent = '0:00';
+                
+                // Load metadata to get duration
+                audioPlayer.addEventListener('loadedmetadata', function() {
+                    totalDurationDisplay.textContent = formatTime(audioPlayer.duration);
+                    remainingTimeDisplay.textContent = `-${formatTime(audioPlayer.duration)}`;
+                });
+            }
+
+            // Play/Pause function
+            function togglePlayPause() {
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                } else {
+                    audioPlayer.pause();
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            }
+
+            // Previous song
+            function prevSong() {
+                currentSongIndex--;
+                if (currentSongIndex < 0) {
+                    currentSongIndex = playlist.length - 1;
+                }
+                loadSong(currentSongIndex);
+                if (!audioPlayer.paused) {
+                    audioPlayer.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                }
+            }
+
+            // Next song
+            function nextSong() {
+                currentSongIndex++;
+                if (currentSongIndex >= playlist.length) {
+                    currentSongIndex = 0;
+                }
+                loadSong(currentSongIndex);
+                if (!audioPlayer.paused) {
+                    audioPlayer.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                }
+            }
+
+            // Update progress bar
+            function updateProgress() {
+                const { currentTime, duration } = audioPlayer;
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+                
+                // Update time displays
+                currentTimeDisplay.textContent = formatTime(currentTime);
+                remainingTimeDisplay.textContent = `-${formatTime(duration - currentTime)}`;
+                
+                // If song ended, play next song
+                if (currentTime === duration) {
+                    nextSong();
+                }
+            }
+
+            // Set progress bar on click
+            function setProgress(e) {
+                const width = this.clientWidth;
+                const clickX = e.offsetX;
+                const duration = audioPlayer.duration;
+                audioPlayer.currentTime = (clickX / width) * duration;
+            }
+
+            // Set volume
+            function setVolume(e) {
+                const width = volumeSlider.clientWidth;
+                const clickX = e.offsetX;
+                const volume = clickX / width;
+                
+                // Set volume (0 to 1)
+                audioPlayer.volume = volume;
+                volumeLevel.style.width = `${volume * 100}%`;
+                
+                // Update volume icon based on level
+                updateVolumeIcon(volume);
+            }
+
+            // Update volume icon based on level
+            function updateVolumeIcon(volume) {
+                volumeIcon.innerHTML = '';
+                let icon;
+                
+                if (volume === 0) {
+                    icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>`;
+                } else if (volume < 0.5) {
+                    icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>`;
+                } else {
+                    icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>`;
+                }
+                
+                volumeIcon.innerHTML = icon;
+            }
+
+            // Toggle mute
+            function toggleMute() {
+                if (audioPlayer.volume > 0) {
+                    // Store the current volume to restore later
+                    audioPlayer.dataset.volume = audioPlayer.volume;
+                    audioPlayer.volume = 0;
+                    volumeLevel.style.width = '0%';
+                    updateVolumeIcon(0);
+                } else {
+                    // Restore the previous volume
+                    const storedVolume = audioPlayer.dataset.volume || 1;
+                    audioPlayer.volume = storedVolume;
+                    volumeLevel.style.width = `${storedVolume * 100}%`;
+                    updateVolumeIcon(storedVolume);
+                }
+            }
+
+            // Event listeners
+            playPauseButton.addEventListener('click', togglePlayPause);
+            prevButton.addEventListener('click', prevSong);
+            nextButton.addEventListener('click', nextSong);
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            progressBar.addEventListener('click', setProgress);
+            volumeSlider.addEventListener('click', setVolume);
+            volumeIcon.addEventListener('click', toggleMute);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    togglePlayPause();
+                } else if (e.code === 'ArrowLeft') {
+                    audioPlayer.currentTime -= 5;
+                } else if (e.code === 'ArrowRight') {
+                    audioPlayer.currentTime += 5;
+                } else if (e.code === 'ArrowUp') {
+                    const newVolume = Math.min(1, audioPlayer.volume + 0.1);
+                    audioPlayer.volume = newVolume;
+                    volumeLevel.style.width = `${newVolume * 100}%`;
+                    updateVolumeIcon(newVolume);
+                } else if (e.code === 'ArrowDown') {
+                    const newVolume = Math.max(0, audioPlayer.volume - 0.1);
+                    audioPlayer.volume = newVolume;
+                    volumeLevel.style.width = `${newVolume * 100}%`;
+                    updateVolumeIcon(newVolume);
+                }
+            });
+
+            // Initialize volume display
+            volumeLevel.style.width = `${audioPlayer.volume * 100}%`;
+            updateVolumeIcon(audioPlayer.volume);
+        });
+    </script>
+</body>
+</html>

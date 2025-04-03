@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon to iOS</title>
+    <meta name="description" content="VYBZ - A music player from the future" />
+    <meta name="author" content="Prince" />
+
+    <meta property="og:title" content="VYBZ Music Player" />
+    <meta property="og:description" content="VYBZ - A purple-themed music player app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://otiktpyazqotihijbwhm.supabase.co/storage/v1/object/public/images/390738f5-10d9-4718-bec8-1139250bbb37-Untitled%20design%20(28).png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Background elements */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8a2be2, #4a00e0);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .bg-circle-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .bg-circle-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .bg-circle-3 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+        }
+
+        /* Header styles */
+        .header {
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #8a2be2, #4a00e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .subheader {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.4;
+        }
+
+        /* Main content */
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            flex: 1;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+
+        .mockup-container {
+            position: relative;
+        }
+
+        .iphone-mockup {
+            width: 240px;
+            height: 480px;
+            background-color: #111;
+            border-radius: 36px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 6px solid #222;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iphone-notch {
+            width: 120px;
+            height: 25px;
+            background-color: #111;
+            border-radius: 0 0 16px 16px;
+            margin: 0 auto;
+        }
+
+        .iphone-screen {
+            flex: 1;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .app-screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .abstract-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(135deg, #8a2be2, #4a00e0);
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+        }
+
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            bottom: 10%;
+            right: 15%;
+        }
+
+        .shape-3 {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            left: 20%;
+        }
+
+        /* Button and text container */
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 400px;
+        }
+
+        /* Button styles */
+        .cta-button {
+            display: inline-block;
+            padding: 0.9rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #8a2be2, #4a00e0);
+            border-radius: 50px;
+            box-shadow: 0 10px 15px -3px rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 20px -3px rgba(138, 43, 226, 0.4);
+        }
+
+        .cta-button:hover::after {
+            opacity: 1;
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 10px -3px rgba(138, 43, 226, 0.3);
+        }
+
+        /* Home link */
+        .home-link {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #666;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .home-link:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #8a2be2;
+            transform: translateY(-2px);
+        }
+
+        .home-link svg {
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+
+        /* Footer styles */
+        .footer {
+            padding: 0.5rem 0;
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subheader {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .iphone-mockup {
+                width: 180px;
+                height: 360px;
+                border-radius: 30px;
+            }
+
+            .iphone-notch {
+                width: 90px;
+                height: 20px;
+            }
+
+            .text-container {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subheader {
+                font-size: 0.9rem;
+            }
+
+            .iphone-mockup {
+                width: 160px;
+                height: 320px;
+                border-radius: 25px;
+                border: 5px solid #222;
+            }
+
+            .iphone-notch {
+                width: 80px;
+                height: 18px;
+            }
+
+            .cta-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .home-link {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background circles -->
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Coming Soon to iOS</h1>
+            <p class="subheader">Our iOS app is still in development. Enjoy the web version now!</p>
+        </div>
+
+        <div class="content">
+            <div class="mockup-container">
+                <!-- Abstract shapes -->
+                <div class="abstract-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                </div>
+
+                <!-- iPhone mockup -->
+                <div class="iphone-mockup">
+                    <div class="iphone-notch"></div>
+                    <div class="iphone-screen">
+                        <!-- App screenshot -->
+                        <img src="ss.jpg" alt="App Screenshot" class="app-screenshot">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-container">
+                <a href="https://vybz-music-app.vercel.app" class="cta-button">Access Web App Here</a>
+                
+                <a href="index.html" class="home-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -2px;">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Back to Home
+                </a>
+                
+                <div class="footer">
+                    <p>Stay tuned for updates!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
